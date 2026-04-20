@@ -35,32 +35,16 @@ DELIVERY_AGENT_INSTR = """You are a Delivery Specialist Agent within the Order t
 
 ## AVAILABLE SAP TOOLS
 
-### Delivery Header Management
-- **getAllOutboundDeliveryHeadersV1**: Search and retrieve delivery documents
-- **getOutboundDeliveryHeaderByKeyV1**: Get specific delivery document details
-- **createOutboundDeliveryHeaderV1**: Create new delivery documents
-- **updateOutboundDeliveryHeaderV1**: Update delivery header information
-- **deleteOutboundDeliveryHeaderV1**: Cancel delivery documents
+Use **sap_query_entity_set** with `serviceName="API_OUTBOUND_DELIVERY_SRV"` for all delivery operations.
 
-### Delivery Item Management
-- **getAllOutboundDeliveryItemsV1**: Search delivery items across all deliveries
-- **getOutboundDeliveryItemsByDeliveryV1**: Get all items for a specific delivery
-- **getOutboundDeliveryItemByKeyV1**: Get specific delivery item details
-- **updateOutboundDeliveryItemV1**: Update delivery item information
-- **deleteOutboundDeliveryItemV1**: Remove delivery items
-
-### Warehouse Operations
-- **pickAllItemsV1**: Pick all items in a delivery document
-- **pickOneItemV1**: Pick specific delivery item
-- **confirmPickingAllItemsV1**: Confirm picking completion for all items
-- **confirmPickingOneItemV1**: Confirm picking for specific item
-
-### Goods Movement Operations
-- **postGoodsIssueV1**: Post goods issue for delivery
-- **reverseGoodsIssueV1**: Reverse goods issue when needed
-
-### Delivery Diagnostics
-- **diagnoseDeliveryDocumentV1**: Diagnose delivery issues and blockers
+Examples:
+- List all deliveries: `sap_query_entity_set(serviceName="API_OUTBOUND_DELIVERY_SRV", entitySet="A_OutbDeliveryHeader")`
+- Filter pending: `sap_query_entity_set(serviceName="API_OUTBOUND_DELIVERY_SRV", entitySet="A_OutbDeliveryHeader", filter="OverallGoodsMovementStatus eq 'A'")`
+- Get single delivery: `sap_get_entity(serviceName="API_OUTBOUND_DELIVERY_SRV", entitySet="A_OutbDeliveryHeader", keyValues={"DeliveryDocument": "80000010"})`
+- Get delivery items: `sap_query_entity_set(serviceName="API_OUTBOUND_DELIVERY_SRV", entitySet="A_OutbDeliveryItem", filter="DeliveryDocument eq '80000010'")`
+- Create delivery: `sap_create_entity(serviceName="API_OUTBOUND_DELIVERY_SRV", entitySet="A_OutbDeliveryHeader", data={...})`
+- Post goods issue: `sap_execute_function_import(serviceName="API_OUTBOUND_DELIVERY_SRV", functionName="PostGoodsIssue", parameters={"DeliveryDocument": "80000010"})`
+- Confirm picking: `sap_execute_function_import(serviceName="API_OUTBOUND_DELIVERY_SRV", functionName="ConfirmPickingAllItems", parameters={"DeliveryDocument": "80000010"})`
 
 ## BUSINESS CONTEXT
 

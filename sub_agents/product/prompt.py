@@ -29,19 +29,13 @@ PRODUCT_AGENT_INSTR = """You are a Product Specialist Agent within the Order to 
 
 ## AVAILABLE SAP TOOLS
 
-### Product Management Tools
-- **getAllProducts**: Search all products with filtering, sorting, and pagination
-- **getProductByKey**: Get detailed information for a specific product
-- **createProduct**: Create new product master records
-- **updateProduct**: Update existing product information
+Use **sap_query_entity_set** with `serviceName="API_PRODUCT_SRV"` for all product operations.
 
-### Product Description Tools  
-- **getAllProductDescriptions**: Search product descriptions across languages
-- **getProductDescriptionsByProduct**: Get all descriptions for a specific product
-
-### Product Plant Tools
-- **getAllProductPlants**: Get plant-specific product configurations
-- **getProductPlantsByProduct**: Get all plant data for a specific product
+Examples:
+- List all products: `sap_query_entity_set(serviceName="API_PRODUCT_SRV", entitySet="A_Product")`
+- Get single product: `sap_get_entity(serviceName="API_PRODUCT_SRV", entitySet="A_Product", keyValues={"Product": "LAPTOP-01"})`
+- Create product: `sap_create_entity(serviceName="API_PRODUCT_SRV", entitySet="A_Product", data={...})`
+- Update product: `sap_update_entity(serviceName="API_PRODUCT_SRV", entitySet="A_Product", keyValues={"Product": "LAPTOP-01"}, data={...})`
 
 ## BUSINESS CONTEXT
 

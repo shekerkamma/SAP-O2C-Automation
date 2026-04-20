@@ -1,41 +1,32 @@
 [project]
-name = "travel-concierge"
+name = "order-to-cash"
 version = "0.1.0"
-description = "Orchestrates personalized travel experiences, illustrates means to integrate booking systems, and provides support throughout the traveler's journey, from initial planning, booking, to real-time itinerary services and alerts."
+description = "SAP Order to Cash automation with Google ADK multi-agent system."
 authors = [
-    { name = "Felipe Lujan"  },
- ]
+    { name = "Felipe Lujan" },
+]
 license = "Apache License 2.0"
 readme = "README.md"
 requires-python = ">=3.11"
 
-[tool.poetry.dependencies]
-google-cloud-aiplatform = { extras = [
-    "adk",
-    "agent-engines",
-], version = "^1.93.0" }
-python = "^3.11"
-pydantic = "^2.10.6"
-python-dotenv = "^1.0.1"
-google-genai = "^1.16.1"
-google-adk = "^1.0.0"
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-google-adk = { version = "^1.0.0", extras = ["eval"] }
-pytest-asyncio = "^0.26.0"
-
-[tool.poetry.group.deployment]
-optional = true
-
-[tool.poetry.group.deployment.dependencies]
-absl-py = "^2.2.1"
-cloudpickle = "^3.1.1"
-flake8-pyproject = "^1.2.3"
+dependencies = [
+    "google-adk>=1.0.0",
+    "google-genai>=1.16.1",
+    "python-dotenv>=1.0.1",
+    "litellm>=1.0.0",
+    "anthropic>=0.40.0",
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=70", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.5",
+    "google-adk[eval]>=1.0.0",
+    "pytest-asyncio>=0.26.0",
+]
