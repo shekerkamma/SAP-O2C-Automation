@@ -1,0 +1,719 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Claude Sonnet 4.5 API with Analysis Tool",
+        "description": "Anthropic Claude API for Claude Sonnet 4.5 with code evaluation capabilities.\nThe Analysis Tool (computer_20241022) enables Claude to execute Python code,\nperform data analysis, validate algorithms, and test code in a sandboxed environment.\n",
+        "version": "2023-06-01T00:00:00.000Z",
+        "contact": {
+            "name": "Anthropic API Support",
+            "url": "https://docs.anthropic.com",
+            "email": "support@anthropic.com"
+        },
+        "termsOfService": "https://www.anthropic.com/legal/terms",
+        "license": {
+            "name": "Anthropic API Terms",
+            "url": "https://www.anthropic.com/legal/terms"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.anthropic.com/v1",
+            "description": "Production API Server"
+        }
+    ],
+    "security": [
+        {
+            "ApiKeyAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Messages",
+            "description": "Create and manage message conversations with Claude"
+        },
+        {
+            "name": "Analysis",
+            "description": "Code evaluation and analysis tool operations"
+        }
+    ],
+    "paths": {
+        "/messages": {
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Create a message with analysis tool",
+                "description": "Send a message to Claude Sonnet 4.5 with the analysis tool enabled for code evaluation.\nThe model will automatically use the tool when code execution would be beneficial.\n",
+                "parameters": [
+                 {
+                    "name": "anthropic-version",
+                    "in": "header",
+                    "required": false,
+                    "schema": {
+                         "type": "string",
+                         "description": "The version of the Claude API you want to use.\n\nRead more about versioning and our version history [here](https://docs.claude.com/en/api/versioning).",
+                         "title": "Anthropic-Version"
+                    },
+                  "description": "The version of the Claude API you want to use.\n\nRead more about versioning and our version history [here](https://docs.claude.com/en/api/versioning)."
+                }
+                ],
+                "operationId": "createMessage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MessageRequest"
+                            },
+                            "examples": {
+                                "basicCodeEvaluation": {
+                                    "summary": "Basic Code Evaluation",
+                                    "value": {
+                                        "model": "claude-sonnet-4-5-20250929",
+                                        "max_tokens": 4096,
+                                        "messages": [
+                                            {
+                                                "role": "user",
+                                                "content": "Calculate the fibonacci sequence for n=10 and verify it works correctly"
+                                            }
+                                        ],
+                                        "tools": [
+                                            {
+                                                "type": "computer_20241022",
+                                                "name": "str_replace_editor"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "dataAnalysis": {
+                                    "summary": "Data Analysis",
+                                    "value": {
+                                        "model": "claude-sonnet-4-5-20250929",
+                                        "max_tokens": 4096,
+                                        "messages": [
+                                            {
+                                                "role": "user",
+                                                "content": "Analyze this dataset and calculate statistics: [23, 45, 67, 89, 12]"
+                                            }
+                                        ],
+                                        "tools": [
+                                            {
+                                                "type": "computer_20241022",
+                                                "name": "str_replace_editor"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "algorithmTesting": {
+                                    "summary": "Algorithm Testing",
+                                    "value": {
+                                        "model": "claude-sonnet-4-5-20250929",
+                                        "max_tokens": 4096,
+                                        "messages": [
+                                            {
+                                                "role": "user",
+                                                "content": "Test this sorting algorithm with edge cases"
+                                            }
+                                        ],
+                                        "tools": [
+                                            {
+                                                "type": "computer_20241022",
+                                                "name": "str_replace_editor"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "conversationWithToolResults": {
+                                    "summary": "Conversation with Tool Results",
+                                    "value": {
+                                        "model": "claude-sonnet-4-5-20250929",
+                                        "max_tokens": 4096,
+                                        "messages": [
+                                            {
+                                                "role": "user",
+                                                "content": "Calculate factorial of 5"
+                                            },
+                                            {
+                                                "role": "assistant",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "I'll calculate that for you"
+                                                    },
+                                                    {
+                                                        "type": "tool_use",
+                                                        "id": "toolu_01ABC",
+                                                        "name": "str_replace_editor",
+                                                        "input": {
+                                                            "command": "create",
+                                                            "path": "/tmp/factorial.py",
+                                                            "file_text": "import math\nresult = math.factorial(5)\nprint(f'5! = {result}')"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "role": "user",
+                                                "content": [
+                                                    {
+                                                        "type": "tool_result",
+                                                        "tool_use_id": "toolu_01ABC",
+                                                        "content": "5! = 120"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "tools": [
+                                            {
+                                                "type": "computer_20241022",
+                                                "name": "str_replace_editor"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response with message content",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                },
+                                "examples": {
+                                    "textResponse": {
+                                        "summary": "Text Response",
+                                        "value": {
+                                            "id": "msg_01ABC123",
+                                            "type": "message",
+                                            "role": "assistant",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Here's the fibonacci sequence result..."
+                                                }
+                                            ],
+                                            "model": "claude-sonnet-4-5-20250929",
+                                            "stop_reason": "end_turn",
+                                            "usage": {
+                                                "input_tokens": 150,
+                                                "output_tokens": 250
+                                            }
+                                        }
+                                    },
+                                    "toolUseResponse": {
+                                        "summary": "Tool Use Response",
+                                        "value": {
+                                            "id": "msg_01XYZ789",
+                                            "type": "message",
+                                            "role": "assistant",
+                                            "content": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "I'll calculate the fibonacci sequence for you"
+                                                },
+                                                {
+                                                    "type": "tool_use",
+                                                    "id": "toolu_01ABC456",
+                                                    "name": "str_replace_editor",
+                                                    "input": {
+                                                        "command": "create",
+                                                        "path": "/tmp/fibonacci.py",
+                                                        "file_text": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\nfor i in range(10):\n    print(f'F({i}) = {fibonacci(i)}')"
+                                                    }
+                                                }
+                                            ],
+                                            "model": "claude-sonnet-4-5-20250929",
+                                            "stop_reason": "tool_use",
+                                            "usage": {
+                                                "input_tokens": 200,
+                                                "output_tokens": 350
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "type": "error",
+                                    "error": {
+                                        "type": "invalid_request_error",
+                                        "message": "Invalid model specified"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "type": "error",
+                                    "error": {
+                                        "type": "authentication_error",
+                                        "message": "Invalid API key"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "type": "error",
+                                    "error": {
+                                        "type": "rate_limit_error",
+                                        "message": "Rate limit exceeded"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-api-key",
+                "description": "Anthropic API key (format: sk-ant-api03-...). Do not commit real keys."
+            }
+        },
+        "schemas": {
+            "MessageRequest": {
+                "type": "object",
+                "required": [
+                    "model",
+                    "max_tokens",
+                    "messages"
+                ],
+                "properties": {
+                    "model": {
+                        "type": "string",
+                        "description": "The model identifier",
+                        "enum": [
+                            "claude-sonnet-4-5-20250929"
+                        ],
+                        "example": "claude-sonnet-4-5-20250929"
+                    },
+                    "max_tokens": {
+                        "type": "integer",
+                        "description": "Maximum number of tokens to generate",
+                        "minimum": 1,
+                        "maximum": 8192,
+                        "example": 4096
+                    },
+                    "messages": {
+                        "type": "array",
+                        "description": "Array of conversation messages",
+                        "minItems": 1,
+                        "items": {
+                            "$ref": "#/components/schemas/Message"
+                        }
+                    },
+                    "tools": {
+                        "type": "array",
+                        "description": "Tools available for Claude to use",
+                        "items": {
+                            "$ref": "#/components/schemas/Tool"
+                        }
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "description": "Sampling temperature (0.0 to 1.0)",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 1,
+                        "example": 0.7
+                    },
+                    "top_p": {
+                        "type": "number",
+                        "description": "Nucleus sampling threshold",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "example": 0.9
+                    },
+                    "top_k": {
+                        "type": "integer",
+                        "description": "Top-k sampling parameter",
+                        "minimum": 1,
+                        "example": 40
+                    },
+                    "stop_sequences": {
+                        "type": "array",
+                        "description": "Custom stop sequences",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "\n\nHuman:",
+                            "\n\nAssistant:"
+                        ]
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "description": "Optional metadata about the request",
+                        "properties": {
+                            "user_id": {
+                                "type": "string",
+                                "example": "user_12345"
+                            }
+                        }
+                    }
+                }
+            },
+            "Message": {
+                "type": "object",
+                "required": [
+                    "role",
+                    "content"
+                ],
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "user",
+                            "assistant"
+                        ],
+                        "description": "The role of the message sender"
+                    },
+                    "content": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "description": "Simple text content"
+                            },
+                            {
+                                "type": "array",
+                                "description": "Multi-part content with text and tool results",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/TextContent"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ToolUseContent"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/ToolResultContent"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "TextContent": 
+            {
+                "type": "object",
+                "required": [
+                    "type",
+                    "text"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "text"
+                        ]
+                    },
+                    "text": {
+                        "type": "string",
+                        "description": "The text content",
+                        "example": "Calculate fibonacci for n=10"
+                    }
+                }
+            },
+            "ToolUseContent": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "id",
+                    "name",
+                    "input"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "tool_use"
+                        ]
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Unique identifier for this tool use",
+                        "example": "toolu_01ABC123"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the tool being used",
+                        "example": "str_replace_editor"
+                    },
+                    "input": {
+                        "type": "object",
+                        "description": "Input parameters for the tool",
+                        "example": {
+                            "command": "create",
+                            "path": "/tmp/test.py",
+                            "file_text": "print('Hello World')"
+                        }
+                    }
+                }
+            },
+            "ToolResultContent": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "tool_use_id",
+                    "content"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "tool_result"
+                        ]
+                    },
+                    "tool_use_id": {
+                        "type": "string",
+                        "description": "ID of the tool use this is a result for",
+                        "example": "toolu_01ABC123"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "The result from tool execution",
+                        "example": "Hello World"
+                    },
+                    "is_error": {
+                        "type": "boolean",
+                        "description": "Whether this result represents an error",
+                        "default": false
+                    }
+                }
+            },
+            "Tool": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "name"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "computer_20241022"
+                        ],
+                        "description": "The tool type identifier",
+                        "example": "computer_20241022"
+                    },
+                    "name": {
+                        "type": "string",
+                        "enum": [
+                            "str_replace_editor"
+                        ],
+                        "description": "The tool name",
+                        "example": "str_replace_editor"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Optional description of the tool",
+                        "example": "Analysis tool for code execution and evaluation"
+                    }
+                }
+            },
+            "MessageResponse": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "type",
+                    "role",
+                    "content",
+                    "model",
+                    "stop_reason",
+                    "usage"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique message identifier",
+                        "example": "msg_01ABC123"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "message"
+                        ],
+                        "example": "message"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "assistant"
+                        ],
+                        "example": "assistant"
+                    },
+                    "content": {
+                        "type": "array",
+                        "description": "Array of content blocks in the response",
+                        "items": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/components/schemas/TextContent"
+                                },
+                                {
+                                    "$ref": "#/components/schemas/ToolUseContent"
+                                }
+                            ]
+                        }
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "The model that generated the response",
+                        "example": "claude-sonnet-4-5-20250929"
+                    },
+                    "stop_reason": {
+                        "type": "string",
+                        "enum": [
+                            "end_turn",
+                            "max_tokens",
+                            "stop_sequence",
+                            "tool_use"
+                        ],
+                        "description": "Reason why the model stopped generating",
+                        "example": "tool_use"
+                    },
+                    "stop_sequence": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "The stop sequence that triggered stopping (if applicable)"
+                    },
+                    "usage": {
+                        "$ref": "#/components/schemas/Usage"
+                    }
+                }
+            },
+            "Usage": {
+                "type": "object",
+                "required": [
+                    "input_tokens",
+                    "output_tokens"
+                ],
+                "properties": {
+                    "input_tokens": {
+                        "type": "integer",
+                        "description": "Number of input tokens consumed",
+                        "example": 150
+                    },
+                    "output_tokens": {
+                        "type": "integer",
+                        "description": "Number of output tokens generated",
+                        "example": 250
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "required": [
+                    "type",
+                    "error"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "error"
+                        ]
+                    },
+                    "error": {
+                        "type": "object",
+                        "required": [
+                            "type",
+                            "message"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "invalid_request_error",
+                                    "authentication_error",
+                                    "permission_error",
+                                    "not_found_error",
+                                    "rate_limit_error",
+                                    "api_error",
+                                    "overloaded_error"
+                                ],
+                                "description": "The type of error"
+                            },
+                            "message": {
+                                "type": "string",
+                                "description": "Human-readable error message",
+                                "example": "Invalid API key provided"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "x-anthropic-metadata": {
+        "model_capabilities": {
+            "code_execution": true,
+            "languages": [
+                "Python"
+            ],
+            "sandboxed": true,
+            "network_access": false
+        },
+        "pricing": {
+            "input_tokens": "$3.00 per million tokens",
+            "output_tokens": "$15.00 per million tokens",
+            "note": "Tool use may increase token count"
+        },
+        "rate_limits": {
+            "requests_per_minute": 50,
+            "tokens_per_minute": 40000,
+            "tokens_per_day": 1000000
+        },
+        "best_practices": [
+            "Use analysis tool for code evaluation and testing",
+            "Handle tool_use stop_reason by providing tool results",
+            "Set appropriate max_tokens based on complexity",
+            "Implement retry logic for rate limits",
+            "Validate tool results before continuing conversation"
+        ]
+    }
+}

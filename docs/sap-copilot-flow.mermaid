@@ -1,0 +1,24 @@
+flowchart TD
+    Start([Manual Trigger]) --> Init1[Initialize Variable: resultSet]
+    Init1 --> Init7[Initialize Variable: resultset2]
+    Init7 --> Init8[Initialize Variable: Content]
+    Init8 --> AzureAI[AzureOpenAI-Integration]
+    AzureAI --> Init_Resp[Initialize Variable: ChatCompletionResponse]
+    Init_Resp --> Compose12[Compose: Clean Response]
+    Compose12 --> Parse4[Parse JSON]
+    Parse4 --> Compose1[Compose: Citations]
+    Compose1 --> Parse3[Parse JSON: Citations]
+    Parse3 --> ForEach3{Apply to Each Citation}
+    ForEach3 --> AppendStr[Append to String: resultset2]
+    AppendStr --> AppendStr2[Append to String: Content]
+    AppendStr2 --> ForEach3
+    ForEach3 --> ComposePrompt[Compose: System Prompt]
+    ComposePrompt --> Init3[Initialize Variable: System Prompt]
+    Init3 --> Init6[Initialize Variable: Messages]
+    Init6 --> Parse2[Parse JSON: History]
+    Parse2 --> ForEach1{Apply to Each Message}
+    ForEach1 --> AppendMsg[Append to Array: Messages]
+    AppendMsg --> ForEach1
+    ForEach1 --> Compose5[Compose: Messages]
+    Compose5 --> Response[Respond to Copilot]
+    Response --> End([End])
