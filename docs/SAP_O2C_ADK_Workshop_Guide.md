@@ -16,18 +16,19 @@
 2. [Free-Tier Service Map](#2-free-tier-service-map)
 3. [How the Stack Works End-to-End](#3-how-the-stack-works-end-to-end)
 4. [Prerequisites](#4-prerequisites)
-5. [Phase 1 — BTP API Management Setup](#5-phase-1--btp-api-management-setup)
-6. [Phase 2 — Google Cloud Shell Setup](#6-phase-2--google-cloud-shell-setup)
-7. [Phase 3 — Clone and Fix the Repos](#7-phase-3--clone-and-fix-the-repos)
-8. [Phase 4 — Configure the MCP Server for APIM](#8-phase-4--configure-the-mcp-server-for-apim)
-9. [Phase 5 — Launch and Test (Mock Mode)](#9-phase-5--launch-and-test-mock-mode)
-10. [Phase 6 — Switch to Real SAP Data (api.sap.com via APIM)](#10-phase-6--switch-to-real-sap-data-apisapcom-via-apim)
-11. [Phase 7 — Real S/4HANA Connection](#11-phase-7--real-s4hana-connection)
-12. [Security Controls Reference](#12-security-controls-reference)
-13. [Repo Fixes Reference](#13-repo-fixes-reference)
-14. [SOFIE vs Google Stack Comparison](#14-sofie-vs-google-stack-comparison)
-15. [Gemini Rate Limits and Model Selection](#15-gemini-rate-limits-and-model-selection)
-16. [Next Steps Beyond This Workshop](#16-next-steps-beyond-this-workshop)
+5. [Phase 0 — Open in GitHub Codespaces (Fastest Start)](#5-phase-0--open-in-github-codespaces-fastest-start)
+6. [Phase 1 — BTP API Management Setup](#6-phase-1--btp-api-management-setup)
+7. [Phase 2 — Google Cloud Shell Setup](#7-phase-2--google-cloud-shell-setup)
+8. [Phase 3 — Clone and Fix the Repos](#8-phase-3--clone-and-fix-the-repos)
+9. [Phase 4 — Configure the MCP Server for APIM](#9-phase-4--configure-the-mcp-server-for-apim)
+10. [Phase 5 — Launch and Test (Mock Mode)](#10-phase-5--launch-and-test-mock-mode)
+11. [Phase 6 — Switch to Real SAP Data (api.sap.com via APIM)](#11-phase-6--switch-to-real-sap-data-apisapcom-via-apim)
+12. [Phase 7 — Real S/4HANA Connection](#12-phase-7--real-s4hana-connection)
+13. [Security Controls Reference](#13-security-controls-reference)
+14. [Repo Fixes Reference](#14-repo-fixes-reference)
+15. [SOFIE vs Google Stack Comparison](#15-sofie-vs-google-stack-comparison)
+16. [Gemini Rate Limits and Model Selection](#16-gemini-rate-limits-and-model-selection)
+17. [Next Steps Beyond This Workshop](#17-next-steps-beyond-this-workshop)
 
 ---
 
@@ -229,7 +230,51 @@ You do not need to install anything locally. Google Cloud Shell provides:
 
 ---
 
-## 5. Phase 1 — BTP API Management Setup
+## 5. Phase 0 — Open in GitHub Codespaces (Fastest Start)
+
+**Goal:** Get a running development environment in under 3 minutes with zero local installation.
+
+> **This is the recommended path.** Codespaces gives you Node.js, Python, and all dependencies pre-installed. Skip Phases 2 and 3 entirely.
+
+### 5.1 Launch the Codespace
+
+1. Go to [github.com/shekerkamma/SAP-O2C-Automation](https://github.com/shekerkamma/SAP-O2C-Automation)
+2. Click the green **Code** button
+3. Select the **Codespaces** tab
+4. Click **Create codespace on main**
+5. Wait ~2 minutes for the container to build
+
+The devcontainer automatically installs all Python and Node.js dependencies for you.
+
+### 5.2 Add Your Gemini API Key
+
+When the Codespace opens, the terminal will show setup instructions. The only thing you need:
+
+1. Get a free API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+2. Open `agent/.env` and replace `your-gemini-api-key-here` with your actual key
+
+### 5.3 Start Mock Mode
+
+```bash
+# Terminal 1: Start the mock SAP backend
+cd mcp-server && node mock-server.js
+
+# Terminal 2: Start the agent UI
+cd agent && adk web
+```
+
+Click the port 8080 notification to open the ADK web UI in your browser. You're running.
+
+### 5.4 What's Next?
+
+- **Stay in Mock Mode:** Jump to Phase 5 to test the full agent flow with mock data
+- **Connect Real SAP:** Go to Phase 1 to set up BTP API Management, then Phase 6
+
+> **Still prefer Google Cloud Shell?** Skip this phase and follow Phases 1-3 for the Cloud Shell path. Both paths converge at Phase 4.
+
+---
+
+## 6. Phase 1 — BTP API Management Setup
 
 **Goal:** Create a BTP APIM proxy with Mock Service as the backend, and generate a consumer API key for the MCP server.
 
@@ -540,7 +585,7 @@ Save this — it becomes `SAP_ODATA_BASE_URL` in the `.env`.
 
 ---
 
-## 6. Phase 2 — Google Cloud Shell Setup
+## 7. Phase 2 — Google Cloud Shell Setup
 
 ### 6.1 Open Cloud Shell
 
@@ -588,7 +633,7 @@ python -c "from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioSe
 
 ---
 
-## 7. Phase 3 — Clone and Fix the Repos
+## 8. Phase 3 — Clone and Fix the Repos
 
 ### 7.1 Clone Both Repos
 
@@ -745,7 +790,7 @@ grep -r "tool_filter" ~/OrderToCashTeam --include="*.py"
 
 ---
 
-## 8. Phase 4 — Configure the MCP Server for APIM
+## 9. Phase 4 — Configure the MCP Server for APIM
 
 ### 8.1 Patch the MCP Server to Send APIM Consumer Key
 
@@ -853,7 +898,7 @@ grep -E "GOOGLE_GENAI_API_KEY|APIM_API_KEY|SAP_ODATA_BASE_URL" .env
 
 ---
 
-## 9. Phase 5 — Launch and Test (Mock Mode)
+## 10. Phase 5 — Launch and Test (Mock Mode)
 
 ### 9.1 Set Up tmux (Keeps adk web Running Through Cloud Shell Reconnects)
 
@@ -945,7 +990,7 @@ This is your debugging surface. If a tool call fails, the error is visible here.
 
 ---
 
-## 10. Phase 6 — Switch to Real SAP Data (api.sap.com via APIM)
+## 11. Phase 6 — Switch to Real SAP Data (api.sap.com via APIM)
 
 **Goal:** One change in APIM — route to api.sap.com instead of the mock. Zero code changes.
 
@@ -1003,7 +1048,7 @@ Run the same test queries from Phase 5. You will now get real S/4HANA demo data.
 
 ---
 
-## 11. Phase 7 — Real S/4HANA Connection
+## 12. Phase 7 — Real S/4HANA Connection
 
 **Zero agent code changes required.** Change only APIM target endpoint and Named Value.
 
@@ -1062,7 +1107,7 @@ If not active, activate them or work with your Basis team to do so.
 
 ---
 
-## 12. Security Controls Reference
+## 13. Security Controls Reference
 
 ### Summary of Controls Applied in This Architecture
 
@@ -1098,7 +1143,7 @@ If this key is ever compromised: revoke it in the APIM Developer Portal, generat
 
 ---
 
-## 13. Repo Fixes Reference
+## 14. Repo Fixes Reference
 
 Quick summary of all changes made to the original repos:
 
@@ -1112,7 +1157,7 @@ Quick summary of all changes made to the original repos:
 
 ---
 
-## 14. SOFIE vs Google Stack Comparison
+## 15. SOFIE vs Google Stack Comparison
 
 | SOFIE Component | Microsoft Service | Google Free Equivalent |
 |----------------|-------------------|----------------------|
@@ -1130,7 +1175,7 @@ Quick summary of all changes made to the original repos:
 
 ---
 
-## 15. Gemini Rate Limits and Model Selection
+## 16. Gemini Rate Limits and Model Selection
 
 As of April 2026, free tier requires no credit card and supports Flash models only:
 
@@ -1147,7 +1192,7 @@ As of April 2026, free tier requires no credit card and supports Flash models on
 
 ---
 
-## 16. Next Steps Beyond This Workshop
+## 17. Next Steps Beyond This Workshop
 
 Once the full O2C flow runs end-to-end in `adk web` against api.sap.com via APIM:
 
