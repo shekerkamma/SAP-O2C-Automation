@@ -1,0 +1,62 @@
+=== Phase 4 (eval run) — SKIPPED ===
+Attempted: 2026-04-24T06:55:00Z
+Reason: GOOGLE_API_KEY not set in the evaluation environment
+
+Per the evaluation plan's Stop Condition #3 pre-check:
+  "Does local eval work with AI Studio API key only (no GCP)?"
+
+Cannot answer without either:
+  (a) $GOOGLE_API_KEY exported in the shell running 'agents-cli eval run', or
+  (b) 'gcloud auth login' completed so Vertex AI can be used as the eval backend
+
+Both require user credentials that are out of scope for an autonomous
+evaluation run.
+
+=== To complete Phase 4 manually ===
+
+Prerequisite:
+  - Obtain an AI Studio API key at https://aistudio.google.com/apikey
+  - export GOOGLE_API_KEY='...'
+
+Then (in a fresh checkout of this repo, on a branch):
+  cd /path/to/SAP-O2C-Automation
+  git checkout -b experiment/agents-cli-phase4
+  uvx google-agents-cli scaffold enhance . \
+    --deployment-target cloud_run \
+    --cicd-runner github_actions \
+    --skip-checks \
+    --google-api-key \
+    --yes
+  uvx google-agents-cli eval run 2>&1 | tee experiments/agents-cli-evaluation-artifacts/phase4-eval-stdout.txt
+
+Measure against the Phase 4 table in experiments/agents-cli-evaluation.md:
+  - Does eval run auto-discover your existing agent?
+  - Does it require an evalset file, or bundle defaults?
+  - Does local eval work with AI Studio API key only (no GCP)?
+  - Time to run a 5-case evalset
+  - Does it produce a comparable output format to your existing tests?
+
+Stop Condition #3 triggers if eval run demands GCP auth despite the
+README's promise of AI Studio sufficiency. Document as a major gap if it
+does.
+
+=== Impact on partial scorecard ===
+
+Current partial scorecard: 29/35 (7 of 8 dimensions scored)
+Missing dimension: "Eval harness usability"
+
+Without Phase 4 completion, the scorecard stays at 29/35 partial. With
+Phase 4 done, the maximum total rises to 40/40 (all 8 dimensions scored).
+
+Expected Phase 4 score range based on docs and Phase 1-3 observations:
+  - Best case: 5 (eval run auto-discovers agent, completes in 30-120s
+    against AI Studio key, produces consumable output)
+  - Typical: 3-4 (works but requires manual evalset authoring, or
+    outputs a format that doesn't integrate with existing tests)
+  - Worst case: 1-2 (requires GCP auth, blocks at Stop Condition #3)
+
+=== Phase 5 note ===
+
+Phase 5 (dry-run deploy) is also blocked in this autonomous run —
+requires 'gcloud auth login' with a real GCP project. To be run
+alongside Phase 4 if and when credentials are available.
