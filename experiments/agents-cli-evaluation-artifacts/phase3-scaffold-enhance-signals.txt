@@ -1,0 +1,79 @@
+=== Captured: 2026-04-24T05:48:54Z ===
+=== agents-cli version ===
+agents-cli, version 0.1.1
+
+=== Invocation ===
+agents-cli scaffold enhance . --deployment-target cloud_run --cicd-runner github_actions --skip-checks --google-api-key --yes
+
+=== Top-level additions ===
+?? .github/
+?? Dockerfile
+?? GEMINI.md
+?? app/
+?? deployment/
+?? experiments/agents-cli-evaluation-artifacts/
+?? pyproject.toml
+?? tests/
+
+=== Added files (all, recursive) ===
+.github/workflows/deploy-to-prod.yaml
+.github/workflows/pr_checks.yaml
+.github/workflows/staging.yaml
+Dockerfile
+GEMINI.md
+app/__init__.py
+app/agent.py
+app/app_utils/telemetry.py
+app/app_utils/typing.py
+app/fast_api_app.py
+deployment/terraform/cicd/apis.tf
+deployment/terraform/cicd/github.tf
+deployment/terraform/cicd/iam.tf
+deployment/terraform/cicd/locals.tf
+deployment/terraform/cicd/outputs.tf
+deployment/terraform/cicd/providers.tf
+deployment/terraform/cicd/service.tf
+deployment/terraform/cicd/service_accounts.tf
+deployment/terraform/cicd/service_outputs.tf
+deployment/terraform/cicd/storage.tf
+deployment/terraform/cicd/telemetry.tf
+deployment/terraform/cicd/telemetry_outputs.tf
+deployment/terraform/cicd/variables.tf
+deployment/terraform/cicd/vars/env.tfvars
+deployment/terraform/cicd/wif.tf
+deployment/terraform/shared/completions.sql
+deployment/terraform/shared/genai_logs_schema.json
+deployment/terraform/single-project/apis.tf
+deployment/terraform/single-project/iam.tf
+deployment/terraform/single-project/outputs.tf
+deployment/terraform/single-project/providers.tf
+deployment/terraform/single-project/service.tf
+deployment/terraform/single-project/service_outputs.tf
+deployment/terraform/single-project/storage.tf
+deployment/terraform/single-project/telemetry.tf
+deployment/terraform/single-project/telemetry_outputs.tf
+deployment/terraform/single-project/variables.tf
+deployment/terraform/single-project/vars/env.tfvars
+experiments/agents-cli-evaluation-artifacts/phase3-scaffold-enhance-signals.txt
+pyproject.toml
+tests/eval/eval_config.json
+tests/eval/evalsets/README.md
+tests/eval/evalsets/basic.evalset.json
+tests/integration/test_agent.py
+tests/integration/test_server_e2e.py
+tests/load_test/.results/.placeholder
+tests/load_test/README.md
+tests/load_test/load_test.py
+tests/unit/test_dummy.py
+
+=== Modified existing files (should be empty — key finding) ===
+
+=== Counts ===
+  agent/ files before enhance: 31
+  agent/ files after enhance:  31
+  Total new files created:     49
+  Total existing files modified: 0
+
+=== Backup locations (tool auto-created) ===
+sap-o2c_20260424_054512
+sap-o2c_20260424_054543
