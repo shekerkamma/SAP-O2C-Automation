@@ -95,7 +95,7 @@ export class SAPODataClient {
 
   async connect(): Promise<void> {
     try {
-      console.log(`Connecting to SAP OData service at ${this.config.baseUrl}`);
+      console.error(`Connecting to SAP OData service at ${this.config.baseUrl}`);
       
       // Fetch CSRF token if enabled
       if (this.config.enableCSRF) {
@@ -115,9 +115,9 @@ export class SAPODataClient {
           timeout: 10000
         });
         connectionTest = true;
-        console.log("Connection verified via catalog service");
+        console.error("Connection verified via catalog service");
       } catch (catalogError) {
-        console.log("Catalog service not accessible, trying alternative methods");
+        console.error("Catalog service not accessible, trying alternative methods");
       }
       
       // Method 2: Try a simple request to test authentication
@@ -135,7 +135,7 @@ export class SAPODataClient {
           if (axiosError.response?.status === 404) {
             // 404 is expected for incomplete URL - this means connection works
             connectionTest = true;
-            console.log("Connection verified - base URL returns 404 as expected");
+            console.error("Connection verified - base URL returns 404 as expected");
           } else if (axiosError.response?.status === 401) {
             throw new Error("Authentication failed - check username/password");
           } else if (axiosError.response?.status === 403) {
@@ -148,7 +148,7 @@ export class SAPODataClient {
 
       if (connectionTest) {
         this.connected = true;
-        console.log("Successfully connected to SAP OData service");
+        console.error("Successfully connected to SAP OData service");
       } else {
         throw new Error("Could not verify SAP OData connection");
       }
@@ -171,7 +171,7 @@ export class SAPODataClient {
       });
     } catch (error) {
       // CSRF token fetch might fail on some systems, continue anyway
-      console.warn('Could not fetch CSRF token:', this.getErrorMessage(error));
+      console.error('Could not fetch CSRF token:', this.getErrorMessage(error));
     }
   }
 
@@ -179,7 +179,7 @@ export class SAPODataClient {
     this.connected = false;
     this.csrfToken = null;
     this.cookies = [];
-    console.log("Disconnected from SAP OData service");
+    console.error("Disconnected from SAP OData service");
   }
 
   async isConnected(): Promise<boolean> {
@@ -224,7 +224,7 @@ export class SAPODataClient {
 
       for (const catalogPath of catalogPaths) {
         try {
-          console.log(`Trying catalog service at: ${catalogPath}`);
+          console.error(`Trying catalog service at: ${catalogPath}`);
           const response = await this.httpClient.get(catalogPath, {
             headers: { 'Accept': 'application/json' }
           });
@@ -245,13 +245,13 @@ export class SAPODataClient {
           }
         } catch (error) {
           const axiosError = error as any;
-          console.log(`Catalog service failed at ${catalogPath}: ${axiosError.response?.status || axiosError.message}`);
+          console.error(`Catalog service failed at ${catalogPath}: ${axiosError.response?.status || axiosError.message}`);
           continue;
         }
       }
 
       // Method 2: Try common service names if catalog fails
-      console.log("Catalog service not available, testing common service names");
+      console.error("Catalog service not available, testing common service names");
       const commonServices = [
         'GWSAMPLE_BASIC',
         'GWDEMO', 
