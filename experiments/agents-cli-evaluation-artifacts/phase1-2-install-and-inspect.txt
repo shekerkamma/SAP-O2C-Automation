@@ -1,0 +1,71 @@
+=== Captured: 2026-04-24T05:49:24Z ===
+
+=== Phase 1 — Install (agents-cli v0.1.1) ===
+
+Install method: uv pip install --target /tmp/agents-cli-audit google-agents-cli
+Install time (cold + first invocation): ~5.6 seconds (incl. 62 dependencies resolved in 172ms)
+Python version tested against: 3.12
+Node.js dependency: none (pure Python)
+
+=== Phase 2 — Wheel inspection ===
+
+Install path: /home/shekerk/.cache/uv/archive-v0/lINFNBmA5RWdrrY-KeTkc/lib/python3.12/site-packages/google/agents/cli
+Obfuscation: none — plain-text Python, readable
+
+-- Command surface (17 top-level commands) --
+  agents-cli
+  agents-cli
+  agents-cli
+  agents-cli
+  agents-cli
+  agents-cli
+  --version
+  --help
+  create
+  data-ingestion
+  deploy
+  eval
+  info
+  infra
+  install
+  lint
+  login
+  playground
+  publish
+  run
+  scaffold
+  setup
+  update
+
+-- Module structure --
+  __init__.py
+  _click.py
+  _output.py
+  _project.py
+  _runner.py
+  _skills_check.py
+  _trust.py
+  auth.py
+  data
+  deploy
+  dev
+  eval
+  info
+  infra
+  main.py
+  publish
+  run
+  scaffold
+  setup
+
+-- Python file count --
+  107 .py files
+
+-- Subprocess/shell-out count --
+  208 occurrences
+  (Signal: agents-cli is a gcloud shell-out wrapper, not a Python-native GCP API implementation.)
+
+-- Distinct GCP Python APIs directly referenced --
+  google.cloud.aiplatform
+  google.cloud.storage
+  (Narrow surface — most cloud operations happen via gcloud shell-outs.)
